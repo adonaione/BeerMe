@@ -83,12 +83,13 @@ function changeView(e){
 function findBreweries(e, pageNumber){
     e.preventDefault(); // will prevent the page form refreshing with form data as query params
     // console.log(e); // grab the  form object
-    // get the value from the city input
-    let cityName = document.getElementById('cityInput').value;
-    console.log(`Looking for breweries in ${cityName}...`)
+    // Get the value from the city input
+    let cityName = document.getElementById('cityInput')?.value;
+    let stateName = document.getElementById('stateInput')?.value;
+    console.log(`Looking for breweries in ${cityName}, ${stateName}...`);
 
     // build the URL for the API request
-    const url = `https://api.openbrewerydb.org/v1/breweries?by_city=${cityName}&per_page=10&page=${pageNumber}`
+    const url = `https://api.openbrewerydb.org/v1/breweries?by_city=${cityName}&by_state=${stateName}&per_page=10&page=${pageNumber}`
     console.log(url);
 
     // Make the http get reqeust to the API to the above URL and log the data

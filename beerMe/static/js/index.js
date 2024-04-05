@@ -42,9 +42,21 @@ function pageLoader(){
         link.addEventListener('click', changeView)
     }
 
-    // Get the fins breweries form and add submit event listener
+    // Get the find breweries form and add submit event listener
     let findBrewsForm = document.getElementById("find-brews-form");
     findBrewsForm.addEventListener('submit', e => findBreweries(e, 1));
+
+
+    // Add Drag and Drop for the beer and coaster
+    let draggableBeer = document.getElementById('draggable');
+    draggableBeer.addEventListener('dragstart', dragBeer);
+
+    let coasterDrop = document.getElementById('droppable');
+    coasterDrop.addEventListener('dragover', e => e.preventDefault());
+    coasterDrop.addEventListener('drop', handleBeerDrop);
+
+    
+
 }
 
 
@@ -77,6 +89,14 @@ function changeView(e){
     let toTurnOn = document.getElementById(idToTurnOn);
     toTurnOn.classList.replace('is-invisible', 'is-visible');
     e.target.classList.add('active');
+
+    // If the view is the grab beer view, listen for keydown events
+    if (idToTurnOn === 'grab'){
+        // Add the key event listener to the document
+        document.addEventListener('keydown', handleBeerMove);
+    } else {
+        document.removeEventListener('keydown', handleBeerMove);
+    }
 }
 
 // event listener to get brewery data and display on the page
@@ -176,4 +196,47 @@ function newDataCell(tr, value){
     let td = document.createElement('td');
     td.innerHTML = value ?? '-'
     tr.append(td)
+}
+
+// Event Listener Function that will get the ID of the beer and set it in the Data Transfer
+function dragBeer(e){
+    console.log('Dragging beer...');
+    e.dataTransfer.setData('text', e.target.id)
+}
+
+
+// Event Listener Function to handle the drop
+function handleBeerDrop(e){
+    console.log('Dropping beer...');
+    let beerId = e.dataTransfer.getData('text');
+    console.log(beerId);
+    const beer = document.getElementById(beerId);
+    e.target.append(beer);
+}
+
+
+// Event Listener for handling key strokes moving the beer
+function handleBeerMove(e){
+    const arrowKeys = ['ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft']
+    if (arrowKeys.includes(e.key)){
+        const glass = document.querySelector('.beerglass');
+        switch(e.key){
+            case 'ArrowUp':
+                glass.style.top = parseInt(glass.style.top) - 5 + 'px';
+                break
+            case 'ArrowDown':
+                glass.style.top = parseInt(glass.style.top) + 5 + 'px';
+                break
+            case 'ArrowLeft': 
+                glass.style.left = parseInt(glass.style.left) - 5 + 'px';
+                break
+            case 'ArrowRight':
+                glass.style.left = parseInt(glass.style.left) + 5 + 'px';
+                break
+        }
+
+        if (glass.style.top === '200px' && glass.style.left === '450px'){
+            setTimeout( () => alert('Enjoy a nice cold beer!'), 0 )
+        }
+    }
 }
